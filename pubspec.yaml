@@ -1,4 +1,3 @@
-# pubspec.yaml
 name: jaspr_elementary
 description: >
   MVVM architecture for Jaspr applications, inspired by Flutter Elementary.
