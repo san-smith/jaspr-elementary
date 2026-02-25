@@ -10,6 +10,7 @@ import 'elementary_component.dart';
 /// - Сохраняет ViewModel при пересоздании компонента
 /// - Вызывает методы жизненного цикла ViewModel
 /// - Уничтожает ViewModel при удалении из дерева
+/// - Создаёт и управляет дочерним Element из Component
 final class ElementaryElement extends Element {
   @override
   ElementaryComponent get component => super.component as ElementaryComponent;
@@ -17,11 +18,14 @@ final class ElementaryElement extends Element {
   late ViewModel _vm;
   bool _isInitialized = false;
 
+  /// Дочерний элемент, созданный из Component returned by build()
+  Element? _childElement;
+
   ElementaryElement(ElementaryComponent super.component);
 
   /// Строит дерево компонентов с использованием ViewModel.
   ///
-  /// Не является @override, так как в Element нет абстрактного build()
+  /// Возвращает Component, который будет преобразован в Element через updateChild().
   Component build() {
     return component.build(_vm as dynamic);
   }
@@ -56,6 +60,12 @@ final class ElementaryElement extends Element {
 
   @override
   void unmount() {
+    // Сначала удаляем дочерний элемент
+    if (_childElement != null) {
+      updateChild(_childElement, null, _childElement!.slot);
+      _childElement = null;
+    }
+
     super.unmount();
     _vm
       ..dispose()
@@ -77,6 +87,15 @@ final class ElementaryElement extends Element {
 
       _isInitialized = true;
     }
+
+    // После инициализации нужно построить дочерний элемент
+    _firstBuild();
+  }
+
+  /// Первый билд после mount
+  void _firstBuild() {
+    assert(_isInitialized);
+    _childElement = updateChild(_childElement, build(), ElementSlot(0, null));
   }
 
   @override
@@ -87,14 +106,19 @@ final class ElementaryElement extends Element {
 
   @override
   void performRebuild() {
-    // Просто отмечаем как не dirty, rebuild вызывается из BuildOwner
-    // Не обращаемся к _dirty напрямую - это приватное поле Element
+    try {
+      // Обновляем дочерний элемент с новым Component из build()
+      _childElement = updateChild(_childElement, build(), ElementSlot(0, null));
+    } catch (e, stack) {
+      Error.throwWithStackTrace(e, stack);
+    }
   }
 
   @override
   void visitChildren(ElementVisitor visitor) {
-    // У ElementaryElement нет дочерних элементов для посещения
-    // Компонент строится через build(), но дети управляются Jaspr
+    if (_childElement != null) {
+      visitor(_childElement!);
+    }
   }
 
   @override

@@ -56,7 +56,6 @@ abstract class ViewModel<
   ViewModel(this._model);
 
   /// Инициализирует ViewModel.
-  @internal
   @mustCallSuper
   void initViewModel() {
     _model.setupVmHandler(onErrorHandle);
@@ -64,32 +63,26 @@ abstract class ViewModel<
   }
 
   /// Вызывается при обновлении конфигурации компонента.
-  @internal
   @mustCallSuper
   void didUpdateComponent(C oldComponent) {}
 
   /// Вызывается при изменении зависимостей компонента.
-  @internal
   @mustCallSuper
   void didChangeDependencies() {}
 
   /// Обрабатывает ошибки от [ElementaryModel].
-  @internal
   @mustCallSuper
   void onErrorHandle(Object error) {}
 
   /// Вызывается когда ViewModel удаляется из дерева компонентов.
-  @internal
   @mustCallSuper
   void deactivate() {}
 
   /// Вызывается когда ViewModel возвращается в дерево после [deactivate()].
-  @internal
   @mustCallSuper
   void activate() {}
 
   /// Освобождает ресурсы ViewModel.
-  @internal
   @mustCallSuper
   void dispose() {
     _model.dispose();
