@@ -8,7 +8,7 @@ import 'counter_vm.dart';
 ///
 /// Использует Elementary архитектуру для разделения логики и UI.
 /// ViewModel предоставляет данные и методы, компонент только отображает.
-class CounterComponent extends ElementaryComponent<ICounterViewModel> {
+class CounterComponent extends ElementaryComponent<CounterViewModel> {
   /// Идентификатор компонента для демонстрации update lifecycle.
   final String id;
 
@@ -23,7 +23,7 @@ class CounterComponent extends ElementaryComponent<ICounterViewModel> {
   }) : super(wmFactory);
 
   @override
-  Component build(ICounterViewModel vm) {
+  Component build(CounterViewModel vm) {
     print('[CounterComponent] build() called');
 
     return div(
@@ -205,34 +205,4 @@ class CounterComponent extends ElementaryComponent<ICounterViewModel> {
     );
   }
 }
-// class Counter extends StatefulComponent {
-//   const Counter({super.key});
 
-//   @override
-//   State<Counter> createState() => CounterState();
-// }
-
-// class CounterState extends State<Counter> {
-//   int count = 0;
-
-//   @override
-//   Component build(BuildContext context) {
-//     return div([
-//       div(classes: 'counter', [
-//         button(
-//           onClick: () {
-//             setState(() => count--);
-//           },
-//           [.text('-')],
-//         ),
-//         span([.text('$count')]),
-//         button(
-//           onClick: () {
-//             setState(() => count++);
-//           },
-//           [.text('+')],
-//         ),
-//       ]),
-//     ]);
-//   }
-// }
