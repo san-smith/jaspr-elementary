@@ -3,12 +3,14 @@ import 'package:meta/meta.dart';
 
 import '../component/elementary_component.dart';
 import '../model/elementary_model.dart';
+import 'i_view_model.dart';
 
 /// Базовый класс для ViewModel в архитектуре MVVM.
 abstract class ViewModel<
   C extends ElementaryComponent,
   M extends ElementaryModel
-> {
+>
+    implements IViewModel {
   final M _model;
 
   /// Контекст построения компонента.
