@@ -1,16 +1,34 @@
+# pubspec.yaml
 name: jaspr_elementary
-description: A starting point for Dart libraries or applications.
-version: 1.0.0
-# repository: https://github.com/my_org/my_repo
+description: >
+  MVVM architecture for Jaspr applications, inspired by Flutter Elementary.
+  Provides tools for separating business logic and UI with automatic ViewModel
+  lifecycle management.
+version: 0.1.0
+homepage: https://github.com/san-smith/jaspr_elementary
+repository: https://github.com/san-smith/jaspr_elementary
+issue_tracker: https://github.com/san-smith/jaspr_elementary/issues
+documentation: https://pub.dev/documentation/jaspr_elementary/latest/
 
 environment:
   sdk: ^3.10.7
 
-# Add regular dependencies here.
 dependencies:
   jaspr: ^0.22.2
-  meta: "^1.9.1"
+  meta: ^1.9.0
 
 dev_dependencies:
   lints: ^6.0.0
   test: ^1.25.6
+
+# Topics help users discover your package on pub.dev
+topics:
+  - jaspr
+  - mvvm
+  - architecture
+  - web
+  - flutter-elementary
+
+# Platforms this package supports
+platforms:
+  web:
