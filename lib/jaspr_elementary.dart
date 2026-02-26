@@ -35,14 +35,14 @@
 /// }
 /// ```
 ///
-/// ### ViewModel (Presentation Logic)
+/// ### ComponentModel (Presentation Logic)
 ///
-/// The [ViewModel] connects business logic with UI. It manages presentation
+/// The [ComponentModel] connects business logic with UI. It manages presentation
 /// state and handles user interactions.
 ///
 /// ```dart
-/// class CounterViewModel extends ViewModel<CounterComponent, CounterModel> {
-///   CounterViewModel(CounterModel model) : super(model);
+/// class CounterComponentModel extends ComponentModel<CounterComponent, CounterModel> {
+///   CounterComponentModel(CounterModel model) : super(model);
 ///
 ///   int get count => model.count;
 ///
@@ -50,7 +50,7 @@
 ///
 ///   @override
 ///   void dispose() {
-///     // Clean up ViewModel resources
+///     // Clean up ComponentModel resources
 ///     super.dispose();
 ///   }
 /// }
@@ -59,24 +59,24 @@
 /// ### Component (UI)
 ///
 /// The [ElementaryComponent] describes how to render the UI based on the
-/// ViewModel state.
+/// ComponentModel state.
 ///
 /// ```dart
-/// class CounterComponent extends ElementaryComponent<CounterViewModel> {
+/// class CounterComponent extends ElementaryComponent<CounterComponentModel> {
 ///   const CounterComponent({
 ///     super.key,
-///     ViewModelFactory wmFactory = counterViewModelFactory,
-///   }) : super(wmFactory);
+///     ComponentModelFactory cmFactory = counterVComponentModelFactory,
+///   }) : super(cmFactory);
 ///
 ///   @override
-///   Component build(CounterViewModel vm) {
+///   Component build(CounterComponentModel cm) {
 ///     return Component.element(
 ///       tag: 'div',
 ///       children: [
-///         Component.text('Count: ${vm.count}'),
+///         Component.text('Count: ${cm.count}'),
 ///         Component.element(
 ///           tag: 'button',
-///           events: {'click': (_) => vm.increment()},
+///           events: {'click': (_) => cm.increment()},
 ///           children: [Component.text('+')],
 ///         ),
 ///       ],
@@ -101,13 +101,13 @@
 /// }
 /// ```
 ///
-/// ### Step 2: Create a ViewModel
+/// ### Step 2: Create a ComponentModel
 ///
-/// You can use a concrete ViewModel class directly (simpler):
+/// You can use a concrete ComponentModel class directly (simpler):
 ///
 /// ```dart
-/// class CounterViewModel extends ViewModel<CounterComponent, CounterModel> {
-///   CounterViewModel(CounterModel model) : super(model);
+/// class CounterComponentModel extends ComponentModel<CounterComponent, CounterModel> {
+///   CounterComponentModel(CounterModel model) : super(model);
 ///
 ///   int get count => model.count;
 ///   void increment() => model.increment();
@@ -117,14 +117,14 @@
 /// Or create an explicit interface for better documentation and testing:
 ///
 /// ```dart
-/// abstract interface class ICounterViewModel extends IViewModel {
+/// abstract interface class ICounterComponentModel extends IComponentModel {
 ///   int get count;
 ///   void increment();
 /// }
 ///
-/// class CounterViewModel extends ViewModel<CounterComponent, CounterModel>
-///     implements ICounterViewModel {
-///   CounterViewModel(CounterModel model) : super(model);
+/// class CounterComponentModel extends ComponentModel<CounterComponent, CounterModel>
+///     implements ICounterComponentModel {
+///   CounterComponentModel(CounterModel model) : super(model);
 ///
 ///   @override
 ///   int get count => model.count;
@@ -137,21 +137,21 @@
 /// ### Step 3: Create a component
 ///
 /// ```dart
-/// class CounterComponent extends ElementaryComponent<CounterViewModel> {
+/// class CounterComponent extends ElementaryComponent<CounterComponentModel> {
 ///   const CounterComponent({
 ///     super.key,
-///     ViewModelFactory wmFactory = counterViewModelFactory,
-///   }) : super(wmFactory);
+///     ComponentModelFactory cmFactory = counterComponentModelFactory,
+///   }) : super(cmFactory);
 ///
 ///   @override
-///   Component build(CounterViewModel vm) {
+///   Component build(CounterComponentModel cm) {
 ///     return Component.element(
 ///       tag: 'div',
 ///       children: [
-///         Component.text('Count: ${vm.count}'),
+///         Component.text('Count: ${cm.count}'),
 ///         Component.element(
 ///           tag: 'button',
-///           events: {'click': (_) => vm.increment()},
+///           events: {'click': (_) => cm.increment()},
 ///           children: [Component.text('+')],
 ///         ),
 ///       ],
@@ -160,8 +160,8 @@
 /// }
 ///
 /// // Factory function
-/// CounterViewModel counterViewModelFactory(BuildContext context) {
-///   return CounterViewModel(CounterModel());
+/// CounterComponentModel counterComponentModelFactory(BuildContext context) {
+///   return CounterComponentModel(CounterModel());
 /// }
 /// ```
 ///
@@ -192,10 +192,10 @@
 ///
 /// ## Lifecycle
 ///
-/// The ViewModel follows a well-defined lifecycle:
+/// The ComponentModel follows a well-defined lifecycle:
 ///
 /// ```
-/// create → initViewModel() → didChangeDependencies() → build()
+/// create → initComponentModel() → didChangeDependencies() → build()
 ///                              ↓
 ///                    didUpdateComponent() (on component update)
 ///                              ↓
@@ -206,12 +206,12 @@
 ///
 /// | Method | Called when | Purpose |
 /// |--------|-------------|---------|
-/// | [ViewModel.initViewModel] | Once, before first build | Initialize state, load data |
-/// | [ViewModel.didChangeDependencies] | After init, when inherited data changes | React to inherited data |
-/// | [ViewModel.didUpdateComponent] | When component configuration changes | React to config changes |
-/// | [ViewModel.activate] | When reinserted after deactivate | Resume operations |
-/// | [ViewModel.deactivate] | When temporarily removed from tree | Pause operations |
-/// | [ViewModel.dispose] | Once, when permanently removed | Clean up resources |
+/// | [ComponentModel.initComponentModel] | Once, before first build | Initialize state, load data |
+/// | [ComponentModel.didChangeDependencies] | After init, when inherited data changes | React to inherited data |
+/// | [ComponentModel.didUpdateComponent] | When component configuration changes | React to config changes |
+/// | [ComponentModel.activate] | When reinserted after deactivate | Resume operations |
+/// | [ComponentModel.deactivate] | When temporarily removed from tree | Pause operations |
+/// | [ComponentModel.dispose] | Once, when permanently removed | Clean up resources |
 ///
 /// ## Error handling
 ///
@@ -230,10 +230,10 @@
 /// }
 /// ```
 ///
-/// Handle errors in ViewModel:
+/// Handle errors in ComponentModel:
 ///
 /// ```dart
-/// class DataViewModel extends ViewModel<DataComponent, DataModel> {
+/// class DataComponentModel extends ComponentModel<DataComponent, DataModel> {
 ///   @override
 ///   void onErrorHandle(Object error) {
 ///     super.onErrorHandle(error);
@@ -268,8 +268,8 @@
 ///
 /// // In component
 /// StreamBuilder<int>(
-///   stream: vm.countStream,
-///   initialData: vm.count,
+///   stream: cm.countStream,
+///   initialData: cm.count,
 ///   builder: (context, snapshot) {
 ///     return Component.text('Count: ${snapshot.data}');
 ///   },
@@ -279,7 +279,7 @@
 /// ### ChangeNotifier
 ///
 /// ```dart
-/// class CounterViewModel extends ViewModel<CounterComponent, CounterModel>
+/// class CounterComponentModel extends ComponentModel<CounterComponent, CounterModel>
 ///     with ChangeNotifier {
 ///   void increment() {
 ///     model.increment();
@@ -289,9 +289,9 @@
 ///
 /// // In component
 /// ListenableBuilder(
-///   listenable: vm,
+///   listenable: cm,
 ///   builder: (context) {
-///     return Component.text('Count: ${vm.count}');
+///     return Component.text('Count: ${cm.count}');
 ///   },
 /// )
 /// ```
@@ -306,21 +306,21 @@
 /// | `Widget` | `Component` |
 /// | `StatefulWidget` | `StatefulComponent` |
 /// | `ElementaryWidget` | `ElementaryComponent` |
-/// | `WidgetModel` | `ViewModel` |
-/// | `IWidgetModel` | `IViewModel` |
+/// | `WidgetModel` | `ComponentModel` |
+/// | `IWidgetModel` | `IComponentModel` |
 /// | `ElementaryModel` | `ElementaryModel` |
-/// | `WidgetModelFactory` | `ViewModelFactory` |
+/// | `WidgetModelFactory` | `ComponentModelFactory` |
 /// | `BuildContext` | `BuildContext` |
 ///
 /// ### Code migration example
 ///
 /// **Flutter:**
 /// ```dart
-/// class CounterWidget extends ElementaryWidget<CounterViewModel> {
+/// class CounterWidget extends ElementaryWidget<CounterComponentModel> {
 ///   @override
-///   Widget build(CounterViewModel vm) {
+///   Widget build(CounterComponentModel cm) {
 ///     return Scaffold(
-///       body: Text('Count: ${vm.count}'),
+///       body: Text('Count: ${cm.count}'),
 ///     );
 ///   }
 /// }
@@ -328,12 +328,12 @@
 ///
 /// **Jaspr:**
 /// ```dart
-/// class CounterComponent extends ElementaryComponent<CounterViewModel> {
+/// class CounterComponent extends ElementaryComponent<CounterComponentModel> {
 ///   @override
-///   Component build(CounterViewModel vm) {
+///   Component build(CounterComponentModel cm) {
 ///     return Component.element(
 ///       tag: 'div',
-///       children: [Component.text('Count: ${vm.count}')],
+///       children: [Component.text('Count: ${cm.count}')],
 ///     );
 ///   }
 /// }
@@ -345,8 +345,8 @@
 /// 2. **Use interfaces for large projects** — Create explicit interfaces for
 ///    better documentation and testing
 /// 3. **Clean up resources** — Always dispose of streams, subscriptions, and
-///    controllers in [ViewModel.dispose]
-/// 4. **Use isMounted** — Check [ViewModel.isMounted] before updating state
+///    controllers in [ComponentModel.dispose]
+/// 4. **Use isMounted** — Check [ComponentModel.isMounted] before updating state
 ///    in async operations
 /// 5. **Handle errors centrally** — Use [ElementaryModel.handleError] for
 ///    consistent error handling
@@ -360,12 +360,12 @@
 /// ## Core classes
 ///
 /// - [ElementaryComponent] — Base component for MVVM architecture
-/// - [ViewModel] — Base class for presentation logic
+/// - [ComponentModel] — Base class for presentation logic
 /// - [ElementaryModel] — Base class for business logic
-/// - [IViewModel] — Base marker interface for all ViewModels
-/// - [ViewModelFactory] — Factory function type for creating ViewModels
+/// - [IComponentModel] — Base marker interface for all ComponentModels
+/// - [ComponentModelFactory] — Factory function type for creating ComponentModels
 /// - [ErrorHandler] — Interface for centralized error handling
-/// - [ElementaryElement] — Element that manages ViewModel lifecycle (internal)
+/// - [ElementaryElement] — Element that manages ComponentModel lifecycle (internal)
 ///
 /// ## License
 ///

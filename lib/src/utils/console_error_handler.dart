@@ -78,7 +78,7 @@ import 'error_handler.dart';
 ///
 ///  * [ErrorHandler], for the interface that this class implements
 ///  * [ElementaryModel], for the class that uses this error handler
-///  * [ViewModel.onErrorHandle], for how errors are propagated to the UI
+///  * [ComponentModel.onErrorHandle], for how errors are propagated to the UI
 @internal
 class ConsoleErrorHandler implements ErrorHandler {
   /// Creates an instance of [ConsoleErrorHandler].

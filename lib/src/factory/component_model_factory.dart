@@ -1,90 +1,90 @@
 import 'package:jaspr/jaspr.dart';
 
-import '../view_model/view_model.dart';
+import '../component_model/component_model.dart';
 
-/// A factory function type used to create an instance of [ViewModel].
+/// A factory function type used to create an instance of [ComponentModel].
 ///
 /// The factory is called once when the [ElementaryElement] is created and
-/// inserted into the element tree. The created ViewModel instance lives as
+/// inserted into the element tree. The created ComponentModel instance lives as
 /// long as the element remains in the tree.
 ///
 /// ## Lifecycle
 /// - The factory is called when the element is first created
 /// - The factory is NOT called when the component is updated
-/// - The ViewModel is disposed when the element is removed from the tree
+/// - The ComponentModel is disposed when the element is removed from the tree
 ///
 /// ## Parameters
-/// - [context] — the build context at the location where the ViewModel is created.
+/// - [context] — the build context at the location where the ComponentModel is created.
 ///   Can be used to access inherited components or other context-dependent data.
 ///
 /// ## Returns
-/// - [T] — an instance of ViewModel parameterized by the component type
+/// - [T] — an instance of ComponentModel parameterized by the component type
 ///
 /// ## Examples
 ///
 /// ### Direct dependency creation
 /// ```dart
-/// CounterViewModel counterViewModelFactory(BuildContext context) {
+/// CounterComponentModel counterComponentModelFactory(BuildContext context) {
 ///   final repository = CounterRepository();
 ///   final model = CounterModel(repository);
-///   return CounterViewModel(model);
+///   return CounterComponentModel(model);
 /// }
 /// ```
 ///
 /// ### Using a DI container
 /// ```dart
-/// CounterViewModel counterViewModelFactory(BuildContext context) {
+/// CounterComponentModel counterComponentModelFactory(BuildContext context) {
 ///   final model = getIt<CounterModel>();
-///   return CounterViewModel(model);
+///   return CounterComponentModel(model);
 /// }
 /// ```
 ///
 /// ### Getting dependencies from context
 /// ```dart
-/// CounterViewModel counterViewModelFactory(BuildContext context) {
+/// CounterComponentModel counterComponentModelFactory(BuildContext context) {
 ///   final config = Config.of(context);
 ///   final model = CounterModel(config.apiEndpoint);
-///   return CounterViewModel(model);
+///   return CounterComponentModel(model);
 /// }
 /// ```
 ///
 /// ### Using different factories for testing
 /// ```dart
 /// // Production factory
-/// CounterViewModel counterViewModelFactory(BuildContext context) {
-///   return CounterViewModel(CounterModel());
+/// CounterComponentModel counterComponentModelFactory(BuildContext context) {
+///   return CounterComponentModel(CounterModel());
 /// }
 ///
 /// // Test factory with mock
-/// CounterViewModel counterViewModelFactoryMock(BuildContext context) {
-///   return CounterViewModel(MockCounterModel());
+/// CounterComponentModel counterComponentModelFactoryMock(BuildContext context) {
+///   return CounterComponentModel(MockCounterModel());
 /// }
 ///
 /// // Usage in component
-/// class CounterComponent extends ElementaryComponent<CounterViewModel> {
+/// class CounterComponent extends ElementaryComponent<CounterComponentModel> {
 ///   const CounterComponent({
 ///     super.key,
-///     ViewModelFactory wmFactory = counterViewModelFactory,
-///   }) : super(wmFactory);
+///     ComponentModelFactory cmFactory = counterComponentModelFactory,
+///   }) : super(cmFactory);
 ///
 ///   // For tests
 ///   const CounterComponent.test({
 ///     super.key,
-///   }) : super(counterViewModelFactoryMock);
+///   }) : super(counterComponentModelFactoryMock);
 /// }
 /// ```
 ///
 /// ## Important notes
 ///
-/// - The factory should create a NEW instance of ViewModel each time it is called
-/// - Do not cache or reuse ViewModel instances between factory calls
-/// - Each element in the tree gets its own ViewModel instance
+/// - The factory should create a NEW instance of ComponentModel each time it is called
+/// - Do not cache or reuse ComponentModel instances between factory calls
+/// - Each element in the tree gets its own ComponentModel instance
 /// - The same factory can be used by multiple components, but each will get
-///   a separate ViewModel instance
+///   a separate ComponentModel instance
 ///
 /// ## Best practices
 ///
-/// 1. **Keep factories simple** — Delegate complex initialization to the ViewModel
+/// 1. **Keep factories simple** — Delegate complex initialization to the ComponentModel
 ///    constructor or a separate builder class.
 ///
 /// 2. **Use dependency injection** — For production apps, consider using a DI
@@ -98,8 +98,8 @@ import '../view_model/view_model.dart';
 ///
 /// See also:
 ///
-///  * [ViewModel], for the base class of presentation logic
+///  * [ComponentModel], for the base class of presentation logic
 ///  * [ElementaryComponent], for the component that uses this factory
-///  * [BuildContext], for accessing inherited data during ViewModel creation
-typedef ViewModelFactory<T extends ViewModel> =
+///  * [BuildContext], for accessing inherited data during ComponentModel creation
+typedef ComponentModelFactory<T extends ComponentModel> =
     T Function(BuildContext context);

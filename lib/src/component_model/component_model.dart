@@ -3,20 +3,20 @@ import 'package:meta/meta.dart';
 
 import '../component/elementary_component.dart';
 import '../model/elementary_model.dart';
-import 'i_view_model.dart';
+import 'i_component_model.dart';
 
 /// A base class for ViewModel in MVVM architecture.
 ///
-/// [ViewModel] connects business logic ([ElementaryModel]) with UI ([ElementaryComponent]).
+/// [ComponentModel] connects business logic ([ElementaryModel]) with UI ([ElementaryComponent]).
 /// It manages presentation state and handles user interactions.
 ///
 /// ## Type parameters
-/// - [C] — the type of component that uses this ViewModel
+/// - [C] — the type of component that uses this ComponentModel
 /// - [M] — the type of business logic model
 ///
 /// ## Lifecycle
 /// ```
-/// create → initViewModel() → didChangeDependencies() → build()
+/// create → initComponentModel() → didChangeDependencies() → build()
 ///                              ↓
 ///                    didUpdateComponent() (on component update)
 ///                              ↓
@@ -27,23 +27,23 @@ import 'i_view_model.dart';
 ///
 /// ### Without interface (simpler)
 /// ```dart
-/// class CounterViewModel extends ViewModel<CounterComponent, CounterModel> {
-///   CounterViewModel(CounterModel model) : super(model);
+/// class CounterComponentModel extends ComponentModel<CounterComponent, CounterModel> {
+///   CounterComponentModel(CounterModel model) : super(model);
 ///
 ///   int get count => model.count;
 ///   void increment() => model.increment();
 /// }
 ///
-/// class CounterComponent extends ElementaryComponent<CounterViewModel> {
+/// class CounterComponent extends ElementaryComponent<CounterComponentModel> {
 ///   @override
-///   Component build(CounterViewModel vm) {
+///   Component build(CounterComponentModel cm) {
 ///     return Component.element(
 ///       tag: 'div',
 ///       children: [
-///         Component.text('Count: ${vm.count}'),
+///         Component.text('Count: ${cm.count}'),
 ///         Component.element(
 ///           tag: 'button',
-///           events: {'click': (_) => vm.increment()},
+///           events: {'click': (_) => cm.increment()},
 ///           children: [Component.text('+')],
 ///         ),
 ///       ],
@@ -54,14 +54,14 @@ import 'i_view_model.dart';
 ///
 /// ### With interface (more explicit)
 /// ```dart
-/// abstract interface class ICounterViewModel extends IViewModel {
+/// abstract interface class ICounterComponentModel extends IComponentModel {
 ///   int get count;
 ///   void increment();
 /// }
 ///
-/// class CounterViewModel extends ViewModel<CounterComponent, CounterModel>
-///     implements ICounterViewModel {
-///   CounterViewModel(CounterModel model) : super(model);
+/// class CounterComponentModel extends ComponentModel<CounterComponent, CounterModel>
+///     implements ICounterComponentModel {
+///   CounterComponentModel(CounterModel model) : super(model);
 ///
 ///   @override
 ///   int get count => model.count;
@@ -70,9 +70,9 @@ import 'i_view_model.dart';
 ///   void increment() => model.increment();
 /// }
 ///
-/// class CounterComponent extends ElementaryComponent<ICounterViewModel> {
+/// class CounterComponent extends ElementaryComponent<ICounterComponentModel> {
 ///   @override
-///   Component build(ICounterViewModel vm) {
+///   Component build(ICounterComponentModel cm) {
 ///     // ...
 ///   }
 /// }
@@ -83,15 +83,15 @@ import 'i_view_model.dart';
 /// This is useful for obtaining data from [InheritedComponent] or navigation.
 ///
 /// ## Important
-/// - ViewModel is created once and lives as long as the component is in the tree
-/// - Do not store references to widgets in ViewModel
+/// - ComponentModel is created once and lives as long as the component is in the tree
+/// - Do not store references to components in ComponentModel
 /// - Release resources in [dispose()]
 /// - Use [isMounted] to prevent memory leaks in async operations
 ///
 /// ## Async operations example
 /// ```dart
-/// class DataViewModel extends ViewModel<DataComponent, DataModel> {
-///   DataViewModel(DataModel model) : super(model);
+/// class DataComponentModel extends ComponentModel<DataComponent, DataModel> {
+///   DataComponentModel(DataModel model) : super(model);
 ///
 ///   Future<void> loadData() async {
 ///     final data = await api.fetchData();
@@ -109,24 +109,24 @@ import 'i_view_model.dart';
 ///
 /// | Flutter Elementary | Jaspr Elementary |
 /// |-------------------|------------------|
-/// | `WidgetModel` | `ViewModel` |
+/// | `WidgetModel` | `ComponentModel` |
 /// | `ElementaryWidget` | `ElementaryComponent` |
 /// | `ElementaryModel` | `ElementaryModel` |
-/// | `IWidgetModel` | `IViewModel` |
+/// | `IWidgetModel` | `IComponentModel` |
 ///
 /// See also:
 ///
-///  * [ElementaryComponent], for the component that uses this ViewModel
+///  * [ElementaryComponent], for the component that uses this ComponentModel
 ///  * [ElementaryModel], for the business logic layer
-///  * [IViewModel], for the base marker interface
-abstract class ViewModel<
+///  * [IComponentModel], for the base marker interface
+abstract class ComponentModel<
   C extends ElementaryComponent,
   M extends ElementaryModel
 >
-    implements IViewModel {
+    implements IComponentModel {
   /// The business logic model instance.
   ///
-  /// This field is final and is set during ViewModel construction.
+  /// This field is final and is set during ComponentModel construction.
   final M _model;
 
   /// The build context of the component.
@@ -140,7 +140,7 @@ abstract class ViewModel<
   @internal
   BuildContext? element;
 
-  /// The component that uses this ViewModel.
+  /// The component that uses this ComponentModel.
   ///
   /// This field is set by [ElementaryElement] during initialization.
   /// It contains the current configuration of the component.
@@ -157,8 +157,8 @@ abstract class ViewModel<
   ///
   /// ## Example
   /// ```dart
-  /// class CounterViewModel extends ViewModel<CounterComponent, CounterModel> {
-  ///   CounterViewModel(CounterModel model) : super(model);
+  /// class CounterComponentModel extends ComponentModel<CounterComponent, CounterModel> {
+  ///   CounterComponentModel(CounterModel model) : super(model);
   ///
   ///   int get count => model.count;
   ///
@@ -171,13 +171,13 @@ abstract class ViewModel<
   @visibleForTesting
   M get model => _model;
 
-  /// The component that uses this ViewModel.
+  /// The component that uses this ComponentModel.
   ///
   /// Contains the current configuration of the component.
   /// May be updated during the lifecycle.
   ///
   /// ## Important
-  /// This getter will throw if called before the ViewModel is initialized
+  /// This getter will throw if called before the ComponentModel is initialized
   /// or after it is disposed.
   @protected
   @visibleForTesting
@@ -190,7 +190,7 @@ abstract class ViewModel<
   ///
   /// ## Example
   /// ```dart
-  /// class MyViewModel extends ViewModel<MyComponent, MyModel> {
+  /// class MyComponentModel extends ComponentModel<MyComponent, MyModel> {
   ///   void loadData() {
   ///     final config = Config.of(context);
   ///     // Use config to load data
@@ -202,7 +202,7 @@ abstract class ViewModel<
   /// Throws [StateError] if called after [dispose()].
   ///
   /// ## Lifecycle
-  /// - Available after [initViewModel()] is called
+  /// - Available after [initComponentModel()] is called
   /// - Available until [dispose()] is called
   /// - Not available in constructor or after dispose
   @protected
@@ -211,7 +211,7 @@ abstract class ViewModel<
     assert(() {
       if (element == null) {
         throw StateError(
-          'BuildContext is not available. The ViewModel has been disposed.',
+          'BuildContext is not available. The ComponentModel has been disposed.',
         );
       }
       return true;
@@ -219,46 +219,46 @@ abstract class ViewModel<
     return element!;
   }
 
-  /// Indicates whether the ViewModel is currently mounted in the component tree.
+  /// Indicates whether the ComponentModel is currently mounted in the component tree.
   ///
   /// Use this to prevent memory leaks in asynchronous operations.
   ///
   /// ## Example
   /// ```dart
-  /// class DataViewModel extends ViewModel<DataComponent, DataModel> {
+  /// class DataComponentModel extends ComponentModel<DataComponent, DataModel> {
   ///   Future<void> loadData() async {
   ///     final data = await api.fetchData();
   ///     if (isMounted) {
   ///       // Safe to update state
   ///       model.updateData(data);
   ///     } else {
-  ///       // ViewModel was disposed, ignore the result
+  ///       // ComponentModel was disposed, ignore the result
   ///     }
   ///   }
   /// }
   /// ```
   ///
   /// ## Returns
-  /// - `true` — the ViewModel is currently mounted and can safely update state
-  /// - `false` — the ViewModel has been disposed and should not be used
+  /// - `true` — the ComponentModel is currently mounted and can safely update state
+  /// - `false` — the ComponentModel has been disposed and should not be used
   @protected
   @visibleForTesting
   bool get isMounted => element != null;
 
-  /// Creates an instance of ViewModel with the specified model.
+  /// Creates an instance of ComponentModel with the specified model.
   ///
   /// ## Parameters
   /// - [model] — instance of [ElementaryModel] for business logic
   ///
   /// ## Example
   /// ```dart
-  /// class CounterViewModel extends ViewModel<CounterComponent, CounterModel> {
-  ///   CounterViewModel(CounterModel model) : super(model);
+  /// class CounterComponentModel extends ComponentModel<CounterComponent, CounterModel> {
+  ///   CounterComponentModel(CounterModel model) : super(model);
   /// }
   /// ```
-  ViewModel(this._model);
+  ComponentModel(this._model);
 
-  /// Initializes the ViewModel.
+  /// Initializes the ComponentModel.
   ///
   /// Called once before the first render of the component.
   /// Use this for initial state setup and subscriptions.
@@ -266,8 +266,8 @@ abstract class ViewModel<
   /// ## Lifecycle
   /// This method is called in the following order:
   /// ```
-  /// 1. ViewModel created via factory
-  /// 2. initViewModel() called
+  /// 1. ComponentModel created via factory
+  /// 2. initComponentModel() called
   /// 3. model.init() called
   /// 4. didChangeDependencies() called
   /// 5. build() called
@@ -275,10 +275,10 @@ abstract class ViewModel<
   ///
   /// ## Example
   /// ```dart
-  /// class DataViewModel extends ViewModel<DataComponent, DataModel> {
+  /// class DataComponentModel extends ComponentModel<DataComponent, DataModel> {
   ///   @override
-  ///   void initViewModel() {
-  ///     super.initViewModel();
+  ///   void initComponentModel() {
+  ///     super.initComponentModel();
   ///     // Initialize state
   ///     _isLoading = true;
   ///     // Load initial data
@@ -288,25 +288,25 @@ abstract class ViewModel<
   /// ```
   ///
   /// ## Important
-  /// Always call `super.initViewModel()` in subclasses to ensure
+  /// Always call `super.initComponentModel()` in subclasses to ensure
   /// proper initialization of the model and error handling.
   @mustCallSuper
-  void initViewModel() {
-    _model.setupVmHandler(onErrorHandle);
+  void initComponentModel() {
+    _model.setupCmHandler(onErrorHandle);
     _model.init();
   }
 
   /// Called when the component configuration is updated.
   ///
   /// This method signals that the parent component has recreated
-  /// this component with new parameters. The ViewModel is NOT recreated.
+  /// this component with new parameters. The ComponentModel is NOT recreated.
   ///
   /// ## Parameters
   /// - [oldComponent] — the previous version of the component
   ///
   /// ## Example
   /// ```dart
-  /// class UserViewModel extends ViewModel<UserComponent, UserModel> {
+  /// class UserComponentModel extends ComponentModel<UserComponent, UserModel> {
   ///   @override
   ///   void didUpdateComponent(UserComponent oldComponent) {
   ///     super.didUpdateComponent(oldComponent);
@@ -324,7 +324,7 @@ abstract class ViewModel<
   /// - Before the [build()] method is called with the new configuration
   ///
   /// ## Important
-  /// - The ViewModel instance is preserved across updates
+  /// - The ComponentModel instance is preserved across updates
   /// - Use this method to react to configuration changes
   /// - Do not recreate state here, update existing state instead
   @mustCallSuper
@@ -333,11 +333,11 @@ abstract class ViewModel<
   /// Called when the component's dependencies change.
   ///
   /// Dependencies are data obtained through [BuildContext] from
-  /// [InheritedComponent]. This method is called immediately after [initViewModel()].
+  /// [InheritedComponent]. This method is called immediately after [initComponentModel()].
   ///
   /// ## Example
   /// ```dart
-  /// class ThemeViewModel extends ViewModel<ThemeComponent, ThemeModel> {
+  /// class ThemeComponentModel extends ComponentModel<ThemeComponent, ThemeModel> {
   ///   @override
   ///   void didChangeDependencies() {
   ///     super.didChangeDependencies();
@@ -349,7 +349,7 @@ abstract class ViewModel<
   ///
   /// ## Lifecycle
   /// This method is called:
-  /// - Immediately after [initViewModel()] during first build
+  /// - Immediately after [initComponentModel()] during first build
   /// - When an [InheritedComponent] notifies its dependents of changes
   ///
   /// ## Important
@@ -369,7 +369,7 @@ abstract class ViewModel<
   ///
   /// ## Example
   /// ```dart
-  /// class DataViewModel extends ViewModel<DataComponent, DataModel> {
+  /// class DataComponentModel extends ComponentModel<DataComponent, DataModel> {
   ///   @override
   ///   void onErrorHandle(Object error) {
   ///     super.onErrorHandle(error);
@@ -384,7 +384,7 @@ abstract class ViewModel<
   /// ## Error flow
   /// ```
   /// Business Logic → model.handleError()
-  ///              → ViewModel.onErrorHandle()
+  ///              → ComponentModel.onErrorHandle()
   ///              → UI reaction (snackbar, dialog, etc.)
   /// ```
   ///
@@ -395,9 +395,9 @@ abstract class ViewModel<
   @mustCallSuper
   void onErrorHandle(Object error) {}
 
-  /// Called when the ViewModel is removed from the component tree.
+  /// Called when the ComponentModel is removed from the component tree.
   ///
-  /// The ViewModel may be temporarily removed and then returned (for example,
+  /// The ComponentModel may be temporarily removed and then returned (for example,
   /// when rebuilding the tree with GlobalKey). In this case, [activate()] will
   /// be called later.
   ///
@@ -409,7 +409,7 @@ abstract class ViewModel<
   ///
   /// ## Example
   /// ```dart
-  /// class StreamViewModel extends ViewModel<StreamComponent, StreamModel> {
+  /// class StreamComponentModel extends ComponentModel<StreamComponent, StreamModel> {
   ///   StreamSubscription? _subscription;
   ///
   ///   @override
@@ -433,18 +433,18 @@ abstract class ViewModel<
   @mustCallSuper
   void deactivate() {}
 
-  /// Called when the ViewModel is reinserted into the tree after [deactivate()].
+  /// Called when the ComponentModel is reinserted into the tree after [deactivate()].
   ///
   /// Use this to resume subscriptions or operations that were
   /// paused during deactivation.
   ///
   /// ## Lifecycle
-  /// This method is NOT called the first time a ViewModel becomes active.
-  /// Instead, [initViewModel()] is called in that situation.
+  /// This method is NOT called the first time a ComponentModel becomes active.
+  /// Instead, [initComponentModel()] is called in that situation.
   ///
   /// ## Example
   /// ```dart
-  /// class StreamViewModel extends ViewModel<StreamComponent, StreamModel> {
+  /// class StreamComponentModel extends ComponentModel<StreamComponent, StreamModel> {
   ///   @override
   ///   void activate() {
   ///     super.activate();
@@ -459,10 +459,10 @@ abstract class ViewModel<
   @mustCallSuper
   void activate() {}
 
-  /// Releases resources held by the ViewModel.
+  /// Releases resources held by the ComponentModel.
   ///
-  /// Called once when the ViewModel is permanently removed from the tree.
-  /// After this method is called, the ViewModel should not be used.
+  /// Called once when the ComponentModel is permanently removed from the tree.
+  /// After this method is called, the ComponentModel should not be used.
   ///
   /// ## Cleanup checklist
   /// - Cancel all stream subscriptions
@@ -472,7 +472,7 @@ abstract class ViewModel<
   ///
   /// ## Example
   /// ```dart
-  /// class DataViewModel extends ViewModel<DataComponent, DataModel> {
+  /// class DataComponentModel extends ComponentModel<DataComponent, DataModel> {
   ///   StreamSubscription? _subscription;
   ///   Timer? _timer;
   ///
@@ -488,13 +488,13 @@ abstract class ViewModel<
   /// ## Lifecycle
   /// This method is called in the following order:
   /// ```
-  /// unmount() → ViewModel.dispose() → model.dispose()
+  /// unmount() → ComponentModel.dispose() → model.dispose()
   /// ```
   ///
   /// ## Important
   /// - Always call `super.dispose()` in subclasses
-  /// - After this method, the ViewModel is in an undefined state
-  /// - Do not call any methods on the ViewModel after dispose
+  /// - After this method, the ComponentModel is in an undefined state
+  /// - Do not call any methods on the ComponentModel after dispose
   @mustCallSuper
   void dispose() {
     _model.dispose();
@@ -509,13 +509,13 @@ abstract class ViewModel<
   ///
   /// ## Example
   /// ```dart
-  /// test('ViewModel uses component', () {
-  ///   final viewModel = TestViewModel(TestModel());
+  /// test('ComponentModel uses component', () {
+  ///   final componentModel = TestComponentModel(TestModel());
   ///   final mockComponent = MockTestComponent();
-  ///   viewModel.setupTestComponent(mockComponent);
+  ///   ComponentModel.setupTestComponent(mockComponent);
   ///
-  ///   // Test ViewModel behavior with mock component
-  ///   expect(viewModel.component, equals(mockComponent));
+  ///   // Test ComponentModel behavior with mock component
+  ///   expect(componentModel.component, equals(mockComponent));
   /// });
   /// ```
   @visibleForTesting
@@ -532,13 +532,13 @@ abstract class ViewModel<
   ///
   /// ## Example
   /// ```dart
-  /// test('ViewModel uses context', () {
-  ///   final viewModel = TestViewModel(TestModel());
+  /// test('ComponentModel uses context', () {
+  ///   final componentModel = TestComponentModel(TestModel());
   ///   final mockContext = MockBuildContext();
-  ///   viewModel.setupTestElement(mockContext);
+  ///   componentModel.setupTestElement(mockContext);
   ///
-  ///   // Test ViewModel behavior with mock context
-  ///   expect(viewModel.context, equals(mockContext));
+  ///   // Test ComponentModel behavior with mock context
+  ///   expect(ComponentModel.context, equals(mockContext));
   /// });
   /// ```
   @visibleForTesting
@@ -555,14 +555,14 @@ abstract class ViewModel<
   ///
   /// ## Example
   /// ```dart
-  /// test('ViewModel handles errors', () {
-  ///   final viewModel = TestViewModel(TestModel());
+  /// test('ComponentModel handles errors', () {
+  ///   final componentModel = TestComponentModel(TestModel());
   ///   final testError = Exception('Test error');
   ///
-  ///   viewModel.handleTestError(testError);
+  ///   componentModel.handleTestError(testError);
   ///
-  ///   expect(viewModel.errorHandled, isTrue);
-  ///   expect(viewModel.lastError, equals(testError));
+  ///   expect(componentModel.errorHandled, isTrue);
+  ///   expect(Model.lastError, equals(testError));
   /// });
   /// ```
   @visibleForTesting

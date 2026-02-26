@@ -2,13 +2,13 @@ import 'package:jaspr/dom.dart';
 import 'package:jaspr/jaspr.dart';
 import 'package:jaspr_elementary/jaspr_elementary.dart';
 
-import 'counter_vm.dart';
+import 'counter_component_model.dart';
 
 /// Компонент счётчика.
 ///
 /// Использует Elementary архитектуру для разделения логики и UI.
-/// ViewModel предоставляет данные и методы, компонент только отображает.
-class CounterComponent extends ElementaryComponent<CounterViewModel> {
+/// ComponentModel предоставляет данные и методы, компонент только отображает.
+class CounterComponent extends ElementaryComponent<CounterComponentModel> {
   /// Идентификатор компонента для демонстрации update lifecycle.
   final String id;
 
@@ -19,11 +19,11 @@ class CounterComponent extends ElementaryComponent<CounterViewModel> {
     super.key,
     this.id = 'default',
     this.title = 'Jaspr Elementary Counter',
-    ViewModelFactory wmFactory = counterViewModelFactory,
-  }) : super(wmFactory);
+    ComponentModelFactory cmFactory = counterComponentModelFactory,
+  }) : super(cmFactory);
 
   @override
-  Component build(CounterViewModel vm) {
+  Component build(CounterComponentModel cm) {
     print('[CounterComponent] build() called');
 
     return div(
@@ -57,7 +57,7 @@ class CounterComponent extends ElementaryComponent<CounterViewModel> {
                 fontSize: 12.px,
               ),
               [
-                .text('Lifecycle: ${vm.lifecycleStats}'),
+                .text('Lifecycle: ${cm.lifecycleStats}'),
               ],
             ),
             p(
@@ -74,8 +74,8 @@ class CounterComponent extends ElementaryComponent<CounterViewModel> {
 
         // Значение счётчика с подпиской на Stream
         StreamBuilder<int>(
-          stream: vm.countStream,
-          initialData: vm.count,
+          stream: cm.countStream,
+          initialData: cm.count,
           builder: (context, snapshot) {
             return div(
               classes: 'count-display',
@@ -115,17 +115,17 @@ class CounterComponent extends ElementaryComponent<CounterViewModel> {
           [
             _buildButton(
               text: '-',
-              onClick: (_) => vm.decrement(),
+              onClick: (_) => cm.decrement(),
               color: Colors.red,
             ),
             _buildButton(
               text: 'Reset',
-              onClick: (_) => vm.reset(),
+              onClick: (_) => cm.reset(),
               color: Colors.orange,
             ),
             _buildButton(
               text: '+',
-              onClick: (_) => vm.increment(),
+              onClick: (_) => cm.increment(),
               color: Colors.green,
             ),
           ],
@@ -139,7 +139,7 @@ class CounterComponent extends ElementaryComponent<CounterViewModel> {
           [
             _buildButton(
               text: 'Trigger Error',
-              onClick: (_) => vm.triggerError(),
+              onClick: (_) => cm.triggerError(),
               color: Colors.darkGray,
               small: true,
             ),
@@ -164,8 +164,8 @@ class CounterComponent extends ElementaryComponent<CounterViewModel> {
                 fontSize: 12.px,
               ),
               [
-                _buildListItem('ViewModel создаётся 1 раз при первом mount'),
-                _buildListItem('ViewModel сохраняется при пересоздании компонента'),
+                _buildListItem('ComponentModel создаётся 1 раз при первом mount'),
+                _buildListItem('ComponentModel сохраняется при пересоздании компонента'),
                 _buildListItem('Stream уведомляет UI об изменениях'),
                 _buildListItem('Ошибки обрабатываются через onErrorHandle'),
                 _buildListItem('Смотрите консоль для логов жизненного цикла'),
@@ -205,4 +205,3 @@ class CounterComponent extends ElementaryComponent<CounterViewModel> {
     );
   }
 }
-

@@ -1,15 +1,15 @@
 import 'package:jaspr/jaspr.dart';
 
-import '../view_model/view_model.dart';
+import '../component_model/component_model.dart';
 import 'elementary_component.dart';
 
-/// An element that manages the lifecycle of a ViewModel.
+/// An element that manages the lifecycle of a ComponentModel.
 ///
 /// [ElementaryElement] is a custom [Element] that:
-/// - Creates a ViewModel once during the first build
-/// - Preserves the ViewModel when the component is recreated
-/// - Calls ViewModel lifecycle methods
-/// - Destroys the ViewModel when removed from the tree
+/// - Creates a ComponentModel once during the first build
+/// - Preserves the ComponentModel when the component is recreated
+/// - Calls ComponentModel lifecycle methods
+/// - Destroys the ComponentModel when removed from the tree
 /// - Creates and manages a child [Element] from the [Component]
 ///
 /// ## Lifecycle overview
@@ -26,7 +26,7 @@ import 'elementary_component.dart';
 /// ┌─────────────────────────────────────────┐
 /// │         ElementaryElement               │
 /// │  ┌───────────────────────────────────┐  │
-/// │  │           ViewModel               │  │
+/// │  │           ComponentModel          │  │
 /// │  │  (created once, lives long)       │  │
 /// │  └───────────────────────────────────┘  │
 /// │                                         │
@@ -44,20 +44,20 @@ import 'elementary_component.dart';
 /// See also:
 ///
 ///  * [ElementaryComponent], for the component that uses this element
-///  * [ViewModel], for the base class of presentation logic
+///  * [ComponentModel], for the base class of presentation logic
 ///  * [Element], for the base class in Jaspr
 final class ElementaryElement extends Element {
   @override
   ElementaryComponent get component => super.component as ElementaryComponent;
 
-  /// The ViewModel instance managed by this element.
+  /// The ComponentModel instance managed by this element.
   ///
   /// Created once during [mount()] and disposed during [unmount()].
-  late ViewModel _vm;
+  late ComponentModel _cm;
 
-  /// Whether the ViewModel has been initialized.
+  /// Whether the ComponentModel has been initialized.
   ///
-  /// Used to ensure the ViewModel is created only once during the element's lifetime.
+  /// Used to ensure the ComponentModel is created only once during the element's lifetime.
   bool _isInitialized = false;
 
   /// The child element created from the [Component] returned by [build()].
@@ -72,10 +72,10 @@ final class ElementaryElement extends Element {
   /// - [component] — the component that will be managed by this element
   ElementaryElement(ElementaryComponent super.component);
 
-  /// Builds the component tree using the ViewModel.
+  /// Builds the component tree using the ComponentModel.
   ///
   /// Returns a [Component] that will be converted to an [Element] via [updateChild()].
-  /// This method delegates to [ElementaryComponent.build()] passing the ViewModel.
+  /// This method delegates to [ElementaryComponent.build()] passing the ComponentModel.
   ///
   /// ## Returns
   /// - [Component] — the root component of the UI tree
@@ -87,34 +87,34 @@ final class ElementaryElement extends Element {
   /// ## Example
   /// ```dart
   /// Component build() {
-  ///   return component.build(_vm as dynamic);
+  ///   return component.build(_cm as dynamic);
   /// }
   /// ```
   Component build() {
-    return component.build(_vm as dynamic);
+    return component.build(_cm as dynamic);
   }
 
   /// Updates the element with a new component configuration.
   ///
   /// Called when the parent rebuilds and creates a new instance of the component.
-  /// The ViewModel is preserved, but notified about the component update.
+  /// The ComponentModel is preserved, but notified about the component update.
   ///
   /// ## Parameters
   /// - [newComponent] — the new component configuration
   ///
   /// ## Lifecycle
-  /// This method calls [ViewModel.didUpdateComponent()] to notify the ViewModel
-  /// about the component change. The ViewModel can then decide whether to
+  /// This method calls [ComponentModel.didUpdateComponent()] to notify the ComponentModel
+  /// about the component change. The ComponentModel can then decide whether to
   /// update its state based on the new component configuration.
   ///
   /// ## Important
-  /// The ViewModel is NOT recreated during this method. It continues to live
+  /// The ComponentModel is NOT recreated during this method. It continues to live
   /// with the same state it had before the update.
   @override
   void update(covariant ElementaryComponent newComponent) {
     super.update(newComponent);
-    final oldComponent = _vm.componentInstance!;
-    _vm
+    final oldComponent = _cm.componentInstance!;
+    _cm
       ..componentInstance = newComponent
       ..didUpdateComponent(oldComponent);
   }
@@ -123,10 +123,10 @@ final class ElementaryElement extends Element {
   ///
   /// Dependencies are data obtained from [InheritedComponent] via [BuildContext].
   /// When an inherited component updates and notifies its dependents, this method
-  /// is called to notify the ViewModel.
+  /// is called to notify the ComponentModel.
   ///
   /// ## Lifecycle
-  /// This method is also called immediately after [initViewModel()] during
+  /// This method is also called immediately after [initComponentModel()] during
   /// the first build.
   ///
   /// ## Important
@@ -134,13 +134,13 @@ final class ElementaryElement extends Element {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _vm.didChangeDependencies();
+    _cm.didChangeDependencies();
   }
 
   /// Transitions from the "inactive" to the "active" lifecycle state.
   ///
   /// Called when a previously deactivated element is reinserted into the tree.
-  /// The ViewModel is notified via [ViewModel.activate()] and the element is
+  /// The ComponentModel is notified via [ComponentModel.activate()] and the element is
   /// marked as needing rebuild.
   ///
   /// ## Lifecycle
@@ -152,7 +152,7 @@ final class ElementaryElement extends Element {
   @override
   void activate() {
     super.activate();
-    _vm.activate();
+    _cm.activate();
     markNeedsBuild();
   }
 
@@ -163,13 +163,13 @@ final class ElementaryElement extends Element {
   /// current animation frame. If not reactivated, it will be unmounted.
   ///
   /// ## Lifecycle
-  /// The ViewModel is notified via [ViewModel.deactivate()].
+  /// The ComponentModel is notified via [ComponentModel.deactivate()].
   ///
   /// ## Important
   /// Always call `super.deactivate()` in overrides.
   @override
   void deactivate() {
-    _vm.deactivate();
+    _cm.deactivate();
     super.deactivate();
   }
 
@@ -181,7 +181,7 @@ final class ElementaryElement extends Element {
   ///
   /// ## Cleanup
   /// - Removes the child element via [updateChild()]
-  /// - Disposes the ViewModel via [ViewModel.dispose()]
+  /// - Disposes the ComponentModel via [ComponentModel.dispose()]
   /// - Clears references to element and component
   ///
   /// ## Important
@@ -195,7 +195,7 @@ final class ElementaryElement extends Element {
     }
 
     super.unmount();
-    _vm
+    _cm
       ..dispose()
       ..element = null
       ..componentInstance = null;
@@ -204,7 +204,7 @@ final class ElementaryElement extends Element {
   /// Adds this element to the tree as a child of the given parent.
   ///
   /// Called when a newly created element is added to the tree for the first time.
-  /// This method initializes the ViewModel and performs the first build.
+  /// This method initializes the ComponentModel and performs the first build.
   ///
   /// ## Parameters
   /// - [parent] — the parent element (null for root)
@@ -212,9 +212,9 @@ final class ElementaryElement extends Element {
   ///
   /// ## Lifecycle
   /// 1. Calls `super.mount()` to initialize the element
-  /// 2. Creates ViewModel via factory (only once)
-  /// 3. Initializes ViewModel via [ViewModel.initViewModel()]
-  /// 4. Calls [ViewModel.didChangeDependencies()]
+  /// 2. Creates ComponentModel via factory (only once)
+  /// 3. Initializes ComponentModel via [ComponentModel.initComponentModel()]
+  /// 4. Calls [ComponentModel.didChangeDependencies()]
   /// 5. Performs first build via [_firstBuild()]
   ///
   /// ## Important
@@ -224,11 +224,11 @@ final class ElementaryElement extends Element {
     super.mount(parent, newSlot);
 
     if (!_isInitialized) {
-      _vm = component.wmFactory(this);
-      _vm
+      _cm = component.cmFactory(this);
+      _cm
         ..element = this
         ..componentInstance = component
-        ..initViewModel()
+        ..initComponentModel()
         ..didChangeDependencies();
 
       _isInitialized = true;
@@ -253,7 +253,7 @@ final class ElementaryElement extends Element {
   /// Determines whether the element should rebuild when the component changes.
   ///
   /// ## Returns
-  /// - `true` — always rebuild, as the ViewModel may have changed
+  /// - `true` — always rebuild, as the ComponentModel may have changed
   ///
   /// ## Important
   /// This method exists only as a performance optimization and gives no
@@ -261,7 +261,7 @@ final class ElementaryElement extends Element {
   /// as efficient as possible.
   @override
   bool shouldRebuild(covariant Component newComponent) {
-    // Always rebuild as ViewModel may have changed
+    // Always rebuild as ComponentModel may have changed
     return true;
   }
 

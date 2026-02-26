@@ -1,33 +1,33 @@
 import 'package:jaspr/jaspr.dart';
 
-import '../factory/view_model_factory.dart';
-import '../view_model/i_view_model.dart';
+import '../component_model/i_component_model.dart';
+import '../factory/component_model_factory.dart';
 import 'elementary_element.dart';
 
 /// A base component for MVVM architecture.
 ///
-/// [ElementaryComponent] uses a [ViewModel] to build the UI.
-/// The ViewModel provides data and methods for interaction,
+/// [ElementaryComponent] uses a [ComponentModel] to build the UI.
+/// The ComponentModel provides data and methods for interaction,
 /// while the component only describes how they are rendered.
 ///
 /// ## Type parameters
-/// - [I] — the ViewModel interface used by this component
+/// - [I] — the ComponentModel interface used by this component
 ///
 /// ## Structure
 /// ```dart
-/// class MyComponent extends ElementaryComponent<IMyViewModel> {
+/// class MyComponent extends ElementaryComponent<IMyComponentModel> {
 ///   const MyComponent({
 ///     super.key,
-///     ViewModelFactory wmFactory = myViewModelFactory,
-///   }) : super(wmFactory);
+///     ComponentModelFactory cmFactory = myComponentModelFactory,
+///   }) : super(cmFactory);
 ///
 ///   @override
-///   Component build(IMyViewModel vm) {
+///   Component build(IMyComponentModel cm) {
 ///     return Component.element(tag: 'div', children: [
-///       Component.text('Hello, ${vm.name}'),
+///       Component.text('Hello, ${cm.name}'),
 ///       Component.element(
 ///         tag: 'button',
-///         events: {'click': (_) => vm.onTap()},
+///         events: {'click': (_) => cm.onTap()},
 ///         children: [Component.text('Click')],
 ///       ),
 ///     ]);
@@ -36,20 +36,20 @@ import 'elementary_element.dart';
 /// ```
 ///
 /// ## Important principles
-/// - The [build()] method should be a pure function of the ViewModel
+/// - The [build()] method should be a pure function of the ComponentModel
 /// - Do not access external data sources in [build()]
-/// - All data must come from the ViewModel
+/// - All data must come from the ComponentModel
 ///
 /// ## Optional interface
-/// You can use a specific ViewModel class directly without creating an interface:
+/// You can use a specific ComponentModel class directly without creating an interface:
 /// ```dart
-/// class CounterViewModel extends ViewModel<CounterComponent, CounterModel> {
+/// class CounterComponentModel extends ComponentModel<CounterComponent, CounterModel> {
 ///   // ...
 /// }
 ///
-/// class CounterComponent extends ElementaryComponent<CounterViewModel> {
+/// class CounterComponent extends ElementaryComponent<CounterComponentModel> {
 ///   @override
-///   Component build(CounterViewModel vm) {
+///   Component build(CounterComponentModel cm) {
 ///     // ...
 ///   }
 /// }
@@ -57,60 +57,61 @@ import 'elementary_element.dart';
 ///
 /// Or create an explicit interface for better documentation and testing:
 /// ```dart
-/// abstract interface class ICounterViewModel extends IViewModel {
+/// abstract interface class ICounterComponentModel extends IComponentModel {
 ///   int get count;
 ///   void increment();
 /// }
 ///
-/// class CounterViewModel extends ViewModel<CounterComponent, CounterModel>
-///     implements ICounterViewModel {
+/// class CounterComponentModel extends ComponentModel<CounterComponent, CounterModel>
+///     implements ICounterComponentModel {
 ///   // ...
 /// }
 ///
-/// class CounterComponent extends ElementaryComponent<ICounterViewModel> {
+/// class CounterComponent extends ElementaryComponent<ICounterComponentModel> {
 ///   @override
-///   Component build(ICounterViewModel vm) {
+///   Component build(ICounterComponentModel cm) {
 ///     // ...
 ///   }
 /// }
 /// ```
 ///
-/// ## wmFactory
-/// A factory for creating the ViewModel. By default, a global function is used,
+/// ## cmFactory
+/// A factory for creating the ComponentModel. By default, a global function is used,
 /// but it can be overridden for tests or special cases.
 ///
 /// See also:
 ///
-///  * [ViewModel], for the base class of presentation logic
-///  * [ElementaryElement], for the element that manages the ViewModel lifecycle
-///  * [ViewModelFactory], for the factory function type
-abstract class ElementaryComponent<I extends IViewModel> extends Component {
-  /// The factory function used to create a ViewModel.
+///  * [ComponentModel], for the base class of presentation logic
+///  * [ElementaryElement], for the element that manages the ComponentModel lifecycle
+///  * [ComponentModelFactory], for the factory function type
+abstract class ElementaryComponent<I extends IComponentModel>
+    extends Component {
+  /// The factory function used to create a ComponentModel.
   ///
   /// Can be overridden in the constructor for testing or providing
-  /// an alternative ViewModel implementation.
+  /// an alternative ComponentModel implementation.
   ///
   /// ## Example
   /// ```dart
   /// // Default factory
-  /// const MyComponent() : super(myViewModelFactory);
+  /// const MyComponent() : super(myComponentModelFactory);
   ///
   /// // Custom factory for tests
-  /// MyComponent.test() : super(mockViewModelFactory);
+  /// MyComponent.test() : super(mockComponentModelFactory);
   /// ```
-  final ViewModelFactory wmFactory;
+  final ComponentModelFactory cmFactory;
 
-  /// Creates an instance of ElementaryComponent with the specified ViewModel factory.
+  /// Creates an instance of ElementaryComponent with the specified ComponentModel factory.
   ///
   /// ## Parameters
-  /// - [wmFactory] — factory for creating the ViewModel
+  /// - [cmFactory] — factory for creating the ComponentModel
   /// - [key] — component key (optional)
-  const ElementaryComponent(this.wmFactory, {super.key});
+  const ElementaryComponent(this.cmFactory, {super.key});
 
   /// Creates an [ElementaryElement] to manage this component.
   ///
   /// This method is overridden to use a custom Element that manages
-  /// the ViewModel lifecycle.
+  /// the ComponentModel lifecycle.
   ///
   /// It is uncommon for subclasses to override this method.
   @override
@@ -118,38 +119,38 @@ abstract class ElementaryComponent<I extends IViewModel> extends Component {
     return ElementaryElement(this);
   }
 
-  /// Describes the part of the user interface based on the ViewModel state.
+  /// Describes the part of the user interface based on the ComponentModel state.
   ///
-  /// This method should be a pure function: it receives a ViewModel and
+  /// This method should be a pure function: it receives a ComponentModel and
   /// returns a component tree. No side effects.
   ///
   /// ## Parameters
-  /// - [vm] — ViewModel instance with data and methods
+  /// - [cm] — ComponentModel instance with data and methods
   ///
   /// ## Returns
   /// - [Component] — the root component of the UI tree
   ///
   /// ## Important
   /// - No access to BuildContext in this method
-  /// - All data must come from the ViewModel
+  /// - All data must come from the ComponentModel
   /// - The method may be called frequently, avoid heavy operations
   ///
   /// ## Example
   /// ```dart
   /// @override
-  /// Component build(CounterViewModel vm) {
+  /// Component build(CounterComponentModel cm) {
   ///   return Component.element(
   ///     tag: 'div',
   ///     children: [
-  ///       Component.text('Count: ${vm.count}'),
+  ///       Component.text('Count: ${cm.count}'),
   ///       Component.element(
   ///         tag: 'button',
-  ///         events: {'click': (_) => vm.increment()},
+  ///         events: {'click': (_) => cm.increment()},
   ///         children: [Component.text('+')],
   ///       ),
   ///     ],
   ///   );
   /// }
   /// ```
-  Component build(I vm);
+  Component build(I cm);
 }

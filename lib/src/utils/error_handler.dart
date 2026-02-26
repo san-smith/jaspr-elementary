@@ -30,7 +30,7 @@
 ///    logs or error reports for easier debugging.
 ///
 /// 4. **Avoid UI operations** — This handler should not directly manipulate UI
-///    elements. Use [ViewModel.onErrorHandle] for UI-related error reactions.
+///    elements. Use [ComponentModel.onErrorHandle] for UI-related error reactions.
 ///
 /// ## Examples
 ///
@@ -106,7 +106,7 @@
 ///   │.handleError()   │
 ///   └─────────────────┘
 ///         ↓
-///   ViewModel.onErrorHandle() → UI reactions (snackbar, dialog, etc.)
+///   ComponentModel.onErrorHandle() → UI reactions (snackbar, dialog, etc.)
 /// ```
 ///
 /// ## Best practices
@@ -129,7 +129,7 @@
 /// See also:
 ///
 ///  * [ElementaryModel], for the class that uses this error handler
-///  * [ViewModel.onErrorHandle], for UI-layer error handling
+///  * [ComponentModel.onErrorHandle], for UI-layer error handling
 ///  * [ConsoleErrorHandler], for a simple development error handler
 abstract class ErrorHandler {
   /// Handles an error with an optional stack trace.

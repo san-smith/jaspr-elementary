@@ -12,12 +12,12 @@ MVVM architecture for Jaspr applications, inspired by Flutter Elementary.
 ## Features
 
 - **MVVM Architecture** — Clean separation of business logic, presentation logic, and UI
-- **Lifecycle Management** — Automatic ViewModel lifecycle management (init, update, dispose)
+- **Lifecycle Management** — Automatic ComponentModel lifecycle management (init, update, dispose)
 - **Reactive Agnostic** — Use any state management approach (Streams, ChangeNotifier, Riverpod, etc.)
 - **SSR Compatible** — Works with Jaspr's server-side rendering
 - **Flutter Elementary Compatible** — Familiar API for developers migrating from Flutter
 - **Zero Dependencies** — Only depends on `jaspr` and `meta`
-- **Testable** — Easy to unit test ViewModels and Models independently
+- **Testable** — Easy to unit test ComponentModels and Models independently
 
 ## Installation
 
@@ -66,13 +66,13 @@ class CounterModel extends ElementaryModel {
 }
 ```
 
-### 2. Create a ViewModel
+### 2. Create a ComponentModel
 
-You can use a concrete ViewModel class directly (simpler):
+You can use a concrete ComponentModel class directly (simpler):
 
 ```dart
-class CounterViewModel extends ViewModel<CounterComponent, CounterModel> {
-  CounterViewModel(CounterModel model) : super(model);
+class CounterComponentModel extends ComponentModel<CounterComponent, CounterModel> {
+  CounterComponentModel(CounterModel model) : super(model);
 
   int get count => model.count;
   Stream<int> get countStream => model.countStream;
@@ -85,16 +85,16 @@ class CounterViewModel extends ViewModel<CounterComponent, CounterModel> {
 Or create an explicit interface for better documentation and testing:
 
 ```dart
-abstract interface class ICounterViewModel extends IViewModel {
+abstract interface class ICounterComponentModel extends IComponentModel {
   int get count;
   Stream<int> get countStream;
   void increment();
   void decrement();
 }
 
-class CounterViewModel extends ViewModel<CounterComponent, CounterModel>
-    implements ICounterViewModel {
-  CounterViewModel(CounterModel model) : super(model);
+class CounterComponentModel extends ComponentModel<CounterComponent, CounterModel>
+    implements ICounterComponentModel {
+  CounterComponentModel(CounterModel model) : super(model);
 
   @override
   int get count => model.count;
@@ -113,21 +113,21 @@ class CounterViewModel extends ViewModel<CounterComponent, CounterModel>
 ### 3. Create a Component
 
 ```dart
-class CounterComponent extends ElementaryComponent<CounterViewModel> {
+class CounterComponent extends ElementaryComponent<CounterComponentModel> {
   const CounterComponent({
     super.key,
-    ViewModelFactory wmFactory = counterViewModelFactory,
-  }) : super(wmFactory);
+    ComponentModelFactory cmFactory = counterComponentModelFactory,
+  }) : super(cmFactory);
 
   @override
-  Component build(CounterViewModel vm) {
+  Component build(CounterComponentModel cm) {
     return Component.element(
       tag: 'div',
       classes: 'counter-container',
       children: [
         StreamBuilder<int>(
-          stream: vm.countStream,
-          initialData: vm.count,
+          stream: cm.countStream,
+          initialData: cm.count,
           builder: (context, snapshot) {
             return Component.element(
               tag: 'p',
@@ -137,12 +137,12 @@ class CounterComponent extends ElementaryComponent<CounterViewModel> {
         ),
         Component.element(
           tag: 'button',
-          events: {'click': (_) => vm.increment()},
+          events: {'click': (_) => cm.increment()},
           children: [Component.text('+')],
         ),
         Component.element(
           tag: 'button',
-          events: {'click': (_) => vm.decrement()},
+          events: {'click': (_) => cm.decrement()},
           children: [Component.text('-')],
         ),
       ],
@@ -151,8 +151,8 @@ class CounterComponent extends ElementaryComponent<CounterViewModel> {
 }
 
 // Factory function
-CounterViewModel counterViewModelFactory(BuildContext context) {
-  return CounterViewModel(CounterModel());
+CounterComponentModel counterComponentModelFactory(BuildContext context) {
+  return CounterComponentModel(CounterModel());
 }
 ```
 
@@ -187,14 +187,14 @@ class MyApp extends StatelessComponent {
 
 ```sh
 ┌─────────────────────────────────────────────────────────────┐
-│                      Component (UI)                         │
+│                  Component (UI)                             │
 │  - Describes how to render UI                               │
-│  - Receives data from ViewModel                             │
+│  - Receives data from ComponentModel                        │
 │  - Handles user interactions                                │
 └─────────────────────────────────────────────────────────────┘
                             ↓
 ┌─────────────────────────────────────────────────────────────┐
-│                    ViewModel (Presentation)                 │
+│               ComponentModel (Presentation)                 │
 │  - Manages presentation state                               │
 │  - Handles user interactions                                │
 │  - Connects Model with Component                            │
@@ -213,7 +213,7 @@ class MyApp extends StatelessComponent {
 ### Element Lifecycle
 
 ```sh
-mount() → initViewModel() → didChangeDependencies() → build()
+mount() → initComponentModel() → didChangeDependencies() → build()
                                ↓
                      didUpdateComponent() (on update)
                                ↓
@@ -222,7 +222,7 @@ mount() → initViewModel() → didChangeDependencies() → build()
 
 | Method                    | Called When                             | Purpose                     |
 | ------------------------- | --------------------------------------- | --------------------------- |
-| `initViewModel()`         | Once, before first build                | Initialize state, load data |
+| `initComponentModel()`    | Once, before first build                | Initialize state, load data |
 | `didChangeDependencies()` | After init, when inherited data changes | React to inherited data     |
 | `didUpdateComponent()`    | When component configuration changes    | React to config changes     |
 | `activate()`              | When reinserted after deactivate        | Resume operations           |
@@ -245,7 +245,7 @@ class DataModel extends ElementaryModel {
   }
 }
 
-class DataViewModel extends ViewModel<DataComponent, DataModel> {
+class DataComponentModel extends ComponentModel<DataComponent, DataModel> {
   @override
   void onErrorHandle(Object error) {
     super.onErrorHandle(error);
@@ -258,10 +258,10 @@ class DataViewModel extends ViewModel<DataComponent, DataModel> {
 ### Async Operations
 
 ```dart
-class DataViewModel extends ViewModel<DataComponent, DataModel> {
+class DataComponentModel extends ComponentModel<DataComponent, DataModel> {
   @override
-  void initViewModel() {
-    super.initViewModel();
+  void initComponentModel() {
+    super.initComponentModel();
     loadData();
   }
 
@@ -284,7 +284,7 @@ class DataViewModel extends ViewModel<DataComponent, DataModel> {
 ### Using with ChangeNotifier
 
 ```dart
-class CounterViewModel extends ViewModel<CounterComponent, CounterModel>
+class CounterComponentModel extends ComponentModel<CounterComponent, CounterModel>
     with ChangeNotifier {
   void increment() {
     model.increment();
@@ -300,9 +300,9 @@ class CounterViewModel extends ViewModel<CounterComponent, CounterModel>
 
 // In component
 ListenableBuilder(
-  listenable: vm,
+  listenable: cm,
   builder: (context) {
-    return Component.text('Count: ${vm.count}');
+    return Component.text('Count: ${cm.count}');
   },
 )
 ```
@@ -311,15 +311,15 @@ ListenableBuilder(
 
 ```dart
 // Using get_it
-CounterViewModel counterViewModelFactory(BuildContext context) {
+CounterComponentModel counterComponentModelFactory(BuildContext context) {
   final model = getIt<CounterModel>();
-  return CounterViewModel(model);
+  return CounterComponentModel(model);
 }
 
 // Using Riverpod
-CounterViewModel counterViewModelFactory(BuildContext context) {
+CounterComponentModel counterComponentModelFactory(BuildContext context) {
   final model = ref.read(counterModelProvider);
-  return CounterViewModel(model);
+  return CounterComponentModel(model);
 }
 ```
 
@@ -327,27 +327,27 @@ CounterViewModel counterViewModelFactory(BuildContext context) {
 
 If you are familiar with the Flutter `elementary` package, here is the mapping:
 
-| Flutter Elementary   | Jaspr Elementary      |
-| -------------------- | --------------------- |
-| `Widget`             | `Component`           |
-| `StatefulWidget`     | `StatefulComponent`   |
-| `ElementaryWidget`   | `ElementaryComponent` |
-| `WidgetModel`        | `ViewModel`           |
-| `IWidgetModel`       | `IViewModel`          |
-| `ElementaryModel`    | `ElementaryModel`     |
-| `WidgetModelFactory` | `ViewModelFactory`    |
-| `BuildContext`       | `BuildContext`        |
+| Flutter Elementary   | Jaspr Elementary        |
+| -------------------- | ----------------------- |
+| `Widget`             | `Component`             |
+| `StatefulWidget`     | `StatefulComponent`     |
+| `ElementaryWidget`   | `ElementaryComponent`   |
+| `WidgetModel`        | `ComponentModel`        |
+| `IWidgetModel`       | `IComponentModel`       |
+| `ElementaryModel`    | `ElementaryModel`       |
+| `WidgetModelFactory` | `ComponentModelFactory` |
+| `BuildContext`       | `BuildContext`          |
 
 ### Code Migration Example
 
 **Flutter:**
 
 ```dart
-class CounterWidget extends ElementaryWidget<CounterViewModel> {
+class CounterWidget extends ElementaryWidget<CounterWidgetModel> {
   @override
-  Widget build(CounterViewModel vm) {
+  Widget build(CounterWidgetModel cm) {
     return Scaffold(
-      body: Text('Count: ${vm.count}'),
+      body: Text('Count: ${cm.count}'),
     );
   }
 }
@@ -356,12 +356,12 @@ class CounterWidget extends ElementaryWidget<CounterViewModel> {
 **Jaspr:**
 
 ```dart
-class CounterComponent extends ElementaryComponent<CounterViewModel> {
+class CounterComponent extends ElementaryComponent<CounterComponentModel> {
   @override
-  Component build(CounterViewModel vm) {
+  Component build(CounterComponentModel cm) {
     return Component.element(
       tag: 'div',
-      children: [Component.text('Count: ${vm.count}')],
+      children: [Component.text('Count: ${cm.count}')],
     );
   }
 }
@@ -397,12 +397,12 @@ class CounterModel extends ElementaryModel {
 Always dispose of streams, subscriptions, and controllers:
 
 ```dart
-class DataViewModel extends ViewModel<DataComponent, DataModel> {
+class DataComponentModel extends ComponentModel<DataComponent, DataModel> {
   StreamSubscription? _subscription;
 
   @override
-  void initViewModel() {
-    super.initViewModel();
+  void initComponentModel() {
+    super.initComponentModel();
     _subscription = model.dataStream.listen((data) {
       // Process data
     });
@@ -419,7 +419,7 @@ class DataViewModel extends ViewModel<DataComponent, DataModel> {
 ### 3. Use isMounted for Async Operations
 
 ```dart
-class DataViewModel extends ViewModel<DataComponent, DataModel> {
+class DataComponentModel extends ComponentModel<DataComponent, DataModel> {
   Future<void> loadData() async {
     final data = await api.fetchData();
     if (isMounted) {
@@ -434,22 +434,22 @@ class DataViewModel extends ViewModel<DataComponent, DataModel> {
 
 ```dart
 // Define explicit contract
-abstract interface class IUserViewModel extends IViewModel {
+abstract interface class IUserComponentModel extends IComponentModel {
   String get userName;
   bool get isLoading;
   Future<void> loadUser(String id);
 }
 
 // Implement contract
-class UserViewModel extends ViewModel<UserComponent, UserModel>
-    implements IUserViewModel {
+class UserComponentModel extends ComponentModel<UserComponent, UserModel>
+    implements IUserComponentModel {
   // ...
 }
 
 // Use contract in component
-class UserComponent extends ElementaryComponent<IUserViewModel> {
+class UserComponent extends ElementaryComponent<IUserComponentModel> {
   @override
-  Component build(IUserViewModel vm) {
+  Component build(IUserComponentModel cm) {
     // ...
   }
 }
@@ -475,28 +475,28 @@ class DataModel extends ElementaryModel {
 
 ## Testing
 
-### Unit Test ViewModel
+### Unit Test ComponentModel
 
 ```dart
 void main() {
-  test('CounterViewModel increments count', () {
+  test('CounterComponentModel increments count', () {
     final model = CounterModel();
-    final viewModel = CounterViewModel(model);
+    final cm = CounterComponentModel(model);
 
-    expect(viewModel.count, equals(0));
+    expect(cm.count, equals(0));
 
-    viewModel.increment();
+    cm.increment();
 
-    expect(viewModel.count, equals(1));
+    expect(cm.count, equals(1));
   });
 
-  test('CounterViewModel handles errors', () {
+  test('CounterComponentModel handles errors', () {
     final model = CounterModel();
-    final viewModel = CounterViewModel(model);
-    viewModel.initViewModel();
+    final cm = CounterComponentModel(model);
+    cm.initComponentModel();
 
     Object? capturedError;
-    viewModel.setupTestError((error) => capturedError = error);
+    cm.setupTestError((error) => capturedError = error);
 
     model.handleError(Exception('Test error'));
 
@@ -522,7 +522,7 @@ void main() {
   test('CounterModel reports errors', () {
     final model = CounterModel();
     Object? capturedError;
-    model.setupVmHandler((error) => capturedError = error);
+    model.setupCmHandler((error) => capturedError = error);
 
     model.handleError(Exception('Test error'));
 

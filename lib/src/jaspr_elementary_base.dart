@@ -17,10 +17,10 @@
 /// | Module | Description |
 /// |--------|-------------|
 /// | `component/` | Core components for MVVM architecture |
-/// | `factory/` | Factory function types for ViewModel creation |
+/// | `component_model/` | ComponentModel base classes and interfaces |
+/// | `factory/` | Factory function types for ComponentModel creation |
 /// | `model/` | Business logic base classes |
 /// | `utils/` | Utility classes (error handling, etc.) |
-/// | `view_model/` | ViewModel base classes and interfaces |
 ///
 /// ## Internal vs Public API
 ///
@@ -42,10 +42,10 @@
 ///
 /// ### Component layer
 /// - [ElementaryComponent] — Base component for MVVM architecture
-/// - [ElementaryElement] — Element that manages ViewModel lifecycle
+/// - [ElementaryElement] — Element that manages ComponentModel lifecycle
 ///
 /// ### Factory layer
-/// - [ViewModelFactory] — Factory function type for creating ViewModels
+/// - [ComponentModelFactory] — Factory function type for creating ComponentModels
 ///
 /// ### Model layer
 /// - [ElementaryModel] — Base class for business logic
@@ -53,9 +53,9 @@
 /// ### Utils layer
 /// - [ErrorHandler] — Interface for centralized error handling
 ///
-/// ### ViewModel layer
-/// - [IViewModel] — Base marker interface for all ViewModels
-/// - [ViewModel] — Base class for presentation logic
+/// ### ComponentModel layer
+/// - [IComponentModel] — Base marker interface for all ComponentModels
+/// - [ComponentModel] — Base class for presentation logic
 ///
 /// ## Important notes
 ///
@@ -69,14 +69,14 @@
 ///
 ///  * `jaspr_elementary.dart`, for the public API export file
 ///  * [ElementaryComponent], for the base component class
-///  * [ViewModel], for the base ViewModel class
+///  * [ComponentModel], for the base ComponentModel class
 ///  * [ElementaryModel], for the base business logic class
 library;
 
 export 'component/elementary_component.dart';
 export 'component/elementary_element.dart';
-export 'factory/view_model_factory.dart';
+export 'component_model/component_model.dart';
+export 'component_model/i_component_model.dart';
+export 'factory/component_model_factory.dart';
 export 'model/elementary_model.dart';
 export 'utils/error_handler.dart';
-export 'view_model/i_view_model.dart';
-export 'view_model/view_model.dart';

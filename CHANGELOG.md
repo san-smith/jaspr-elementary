@@ -5,6 +5,43 @@ All notable changes to the `jaspr_elementary` package will be documented in this
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] - 2025-02-26
+
+### ⚠️ Breaking Changes
+
+#### Class and Method Renaming for Flutter Elementary Compatibility
+
+To achieve better alignment with the Flutter `elementary` package naming conventions and improve consistency across platforms, the following classes and methods have been renamed:
+
+| Previous Name (v0.1.x) | New Name (v0.2.0)       |
+| ---------------------- | ----------------------- |
+| `ViewModel`            | `ComponentModel`        |
+| `IViewModel`           | `IComponentModel`       |
+| `initViewModel()`      | `initComponentModel()`  |
+| `vmFactory`            | `cmFactory`             |
+| `ViewModelFactory`     | `ComponentModelFactory` |
+| `setupVmHandler()`     | `setupCmHandler()`      |
+| `_vm` (internal field) | `_cm` (internal field)  |
+
+**Files and Directories Renamed:**
+
+| Previous Path                             | New Path                                         |
+| ----------------------------------------- | ------------------------------------------------ |
+| `lib/src/view_model/`                     | `lib/src/component_model/`                       |
+| `lib/src/view_model/view_model.dart`      | `lib/src/component_model/component_model.dart`   |
+| `lib/src/view_model/i_view_model.dart`    | `lib/src/component_model/i_component_model.dart` |
+| `lib/src/factory/view_model_factory.dart` | `lib/src/factory/component_model_factory.dart`   |
+
+**Why This Change?**
+
+This renaming brings several benefits:
+
+1. **Better Flutter Elementary Compatibility** — The naming now matches the original Flutter `elementary` package more closely, making it easier for developers to migrate between platforms.
+
+2. **Clearer Naming** — `ComponentModel` more accurately reflects that this class is tied to a Jaspr `Component`, not a generic `ViewModel` concept.
+
+3. **Consistency** — All related classes, methods, and files now follow a consistent naming convention.
+
 ## [0.1.0] - 2025-02-25
 
 ### Added
