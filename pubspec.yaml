@@ -4,10 +4,10 @@ description: >
   Provides tools for separating business logic and UI with automatic ViewModel
   lifecycle management.
 version: 0.1.0
-homepage: https://github.com/san-smith/jaspr_elementary
-repository: https://github.com/san-smith/jaspr_elementary
-issue_tracker: https://github.com/san-smith/jaspr_elementary/issues
-documentation: https://pub.dev/documentation/jaspr_elementary/latest/
+homepage: https://github.com/san-smith/jaspr-elementary
+repository: https://github.com/san-smith/jaspr-elementary
+issue_tracker: https://github.com/san-smith/jaspr-elementary/issues
+documentation: https://pub.dev/documentation/jaspr-elementary/latest/
 
 environment:
   sdk: ^3.10.7

@@ -533,10 +533,10 @@ void main() {
 
 ## Additional Resources
 
-- [GitHub Repository](https://github.com/san-smith/jaspr_elementary)
-- [Examples](https://github.com/san-smith/jaspr_elementary/tree/main/example)
-- [API Documentation](https://pub.dev/documentation/jaspr_elementary/latest/)
-- [Issue Tracker](https://github.com/san-smith/jaspr_elementary/issues)
+- [GitHub Repository](https://github.com/san-smith/jaspr-elementary)
+- [Examples](https://github.com/san-smith/jaspr-elementary/tree/main/example)
+- [API Documentation](https://pub.dev/documentation/jaspr-elementary/latest/)
+- [Issue Tracker](https://github.com/san-smith/jaspr-elementary/issues)
 
 ## License
 
