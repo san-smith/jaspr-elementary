@@ -7,7 +7,7 @@ MVVM architecture for [Jaspr](https://pub.dev/packages/jaspr), inspired by [Flut
 | Package                                                    | Description                                                              | Pub                                                                                                |
 | ---------------------------------------------------------- | ------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------- |
 | [`jaspr_elementary`](packages/jaspr_elementary/)           | Core library: `ElementaryModel`, `ComponentModel`, `ElementaryComponent` | [![Pub](https://img.shields.io/pub/v/jaspr_elementary)](https://pub.dev/packages/jaspr_elementary) |
-| [`jaspr_elementary_test`](packages/jaspr_elementary_test/) | Testing utilities (e.g. `testComponentModel` — planned)                  | _not yet on pub.dev_                                                                               |
+| [`jaspr_elementary_test`](packages/jaspr_elementary_test/) | Testing utilities (e.g. `testComponentModel` — planned)                  | [![Pub](https://img.shields.io/pub/v/jaspr_elementary_test)](https://pub.dev/packages/jaspr_elementary_test) |
 
 ## Repository layout
 
@@ -25,6 +25,8 @@ From each package directory, run `dart pub get` and `dart analyze` as usual:
 cd packages/jaspr_elementary && dart pub get && dart analyze
 cd packages/jaspr_elementary_test && dart pub get && dart analyze && dart test
 ```
+
+To work on `jaspr_elementary_test` against a **local** `jaspr_elementary` (before or between pub releases), add `packages/jaspr_elementary_test/pubspec_overrides.yaml` as described in [`packages/jaspr_elementary_test/README.md`](packages/jaspr_elementary_test/README.md). The file name is gitignored.
 
 Run the example:
 

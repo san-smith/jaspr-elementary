@@ -3,9 +3,8 @@ description: >
   Testing utilities for jaspr_elementary: ComponentModel lifecycle helpers and
   related test infrastructure.
 version: 0.1.0
-publish_to: none
 homepage: https://github.com/san-smith/jaspr-elementary
-repository: https://github.com/san-smith/jaspr-elementary
+repository: https://github.com/san-smith/jaspr-elementary/tree/master/packages/jaspr_elementary_test
 issue_tracker: https://github.com/san-smith/jaspr-elementary/issues
 documentation: https://pub.dev/documentation/jaspr_elementary_test/latest/
 
@@ -14,8 +13,7 @@ environment:
 
 dependencies:
   jaspr: ^0.22.2
-  jaspr_elementary:
-    path: ../jaspr_elementary
+  jaspr_elementary: ^0.3.0
   meta: ^1.9.0
   mocktail: ^1.0.4
   test: ^1.25.6
