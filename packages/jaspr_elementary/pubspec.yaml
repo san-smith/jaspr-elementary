@@ -3,9 +3,9 @@ description: >
   MVVM architecture for Jaspr applications, inspired by Flutter Elementary.
   Provides tools for separating business logic and UI with automatic ComponentModel
   lifecycle management.
-version: 0.2.0
+version: 0.3.0
 homepage: https://github.com/san-smith/jaspr-elementary
-repository: https://github.com/san-smith/jaspr-elementary
+repository: https://github.com/san-smith/jaspr-elementary/tree/master/packages/jaspr_elementary
 issue_tracker: https://github.com/san-smith/jaspr-elementary/issues
 documentation: https://pub.dev/documentation/jaspr-elementary/latest/
 

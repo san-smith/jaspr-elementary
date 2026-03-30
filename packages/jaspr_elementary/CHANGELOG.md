@@ -7,9 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-03-30
+
 ### Changed
 
-- Repository layout: the package now lives under `packages/jaspr_elementary/` in a monorepo. The companion package `jaspr_elementary_test` is under `packages/jaspr_elementary_test/`. Published API and pub package name are unchanged.
+- **Monorepo layout** — the Dart package now lives under `packages/jaspr_elementary/` in the [jaspr-elementary](https://github.com/san-smith/jaspr-elementary) repository. The root `README.md` describes all packages in the repo.
+- **Companion package** — [`jaspr_elementary_test`](https://github.com/san-smith/jaspr-elementary/tree/master/packages/jaspr_elementary_test) was added alongside this library (scaffold for future `testComponentModel`-style helpers). It is not required to use `jaspr_elementary` at runtime.
+- **Example app** — `example/counter` now depends on this package via `path: ../../packages/jaspr_elementary`.
+
+### Notes
+
+- **Pub consumers** — package name, imports (`package:jaspr_elementary/...`), and public API are unchanged; only repository paths for checkout and local examples changed.
+- **`pubspec.yaml`** — `repository` now points at the package directory under version control (`.../tree/master/packages/jaspr_elementary`).
 
 ## [0.2.0] - 2025-02-26
 
@@ -170,7 +179,7 @@ class CounterComponent extends ElementaryComponent<CounterViewModel> {
 ### Links
 
 - [GitHub Repository](https://github.com/san-smith/jaspr_elementary)
-- [Examples](https://github.com/san-smith/jaspr_elementary/tree/main/example)
+- [Examples](https://github.com/san-smith/jaspr-elementary/tree/master/example)
 - [API Documentation](https://pub.dev/documentation/jaspr_elementary/latest/)
 - [Report Issues](https://github.com/san-smith/jaspr_elementary/issues)
 

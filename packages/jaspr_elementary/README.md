@@ -25,7 +25,7 @@ Add this to your package's `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  jaspr_elementary: ^0.1.0
+  jaspr_elementary: ^0.3.0
 ```
 
 Then run:
