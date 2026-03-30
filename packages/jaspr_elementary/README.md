@@ -475,7 +475,7 @@ class DataModel extends ElementaryModel {
 
 ## Testing
 
-Companion package [**jaspr_elementary_test**](https://github.com/san-smith/jaspr-elementary/tree/main/packages/jaspr_elementary_test) (in the same repository) will provide `testComponentModel` and related helpers, modelled after Flutter Elementary’s `elementary_test`.
+Companion package [**jaspr_elementary_test**](https://github.com/san-smith/jaspr-elementary/tree/master/packages/jaspr_elementary_test) provides [`testComponentModel`](https://pub.dev/documentation/jaspr_elementary_test/latest/jaspr_elementary_test/testComponentModel.html) and related helpers, modelled after Flutter Elementary’s `elementary_test`.
 
 ### Unit Test ComponentModel
 

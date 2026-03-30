@@ -1,8 +1,6 @@
 /// Testing utilities for package [jaspr_elementary](https://pub.dev/packages/jaspr_elementary).
-///
-/// This library will expose helpers such as `testComponentModel` (Jaspr analogue of
-/// Flutter Elementary's `testWidgetModel`).
 library;
 
-/// Placeholder so integration tests can verify the library resolves (remove when API grows).
-void jasprElementaryTestEnsureLinked() {}
+export 'src/component_model_harness.dart' show ComponentModelHarness;
+export 'src/component_model_tester.dart';
+export 'src/test_component_model.dart';
