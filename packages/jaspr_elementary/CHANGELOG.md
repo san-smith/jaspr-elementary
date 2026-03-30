@@ -5,6 +5,12 @@ All notable changes to the `jaspr_elementary` package will be documented in this
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+
+- Repository layout: the package now lives under `packages/jaspr_elementary/` in a monorepo. The companion package `jaspr_elementary_test` is under `packages/jaspr_elementary_test/`. Published API and pub package name are unchanged.
+
 ## [0.2.0] - 2025-02-26
 
 ### ⚠️ Breaking Changes

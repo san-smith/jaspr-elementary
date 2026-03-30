@@ -1,4 +1,9 @@
 {
+    "dart.projectSearchPaths": [
+        "packages/jaspr_elementary",
+        "packages/jaspr_elementary_test",
+        "example/counter"
+    ],
     "cSpell.words": [
         "jaspr",
         "MVVM"
