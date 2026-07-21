@@ -10,10 +10,10 @@ issue_tracker: https://github.com/san-smith/jaspr-elementary/issues
 documentation: https://pub.dev/documentation/jaspr-elementary/latest/
 
 environment:
-  sdk: ^3.10.7
+  sdk: ^3.12.0
 
 dependencies:
-  jaspr: ^0.22.2
+  jaspr: ^0.23.1
   meta: ^1.9.0
 
 dev_dependencies:
