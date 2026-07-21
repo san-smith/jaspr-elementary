@@ -4,15 +4,15 @@ Testing utilities for [`jaspr_elementary`](https://pub.dev/packages/jaspr_elemen
 
 ## Requirements
 
-- Dart `^3.10.7`
-- [`jaspr_elementary`](https://pub.dev/packages/jaspr_elementary) `^0.3.0`
-- [`jaspr`](https://pub.dev/packages/jaspr) `^0.22.x` (pulled in transitively; must stay compatible with [`jaspr_test`](https://pub.dev/packages/jaspr_test))
+- Dart `^3.12.0`
+- [`jaspr_elementary`](https://pub.dev/packages/jaspr_elementary) `^0.4.0`
+- [`jaspr`](https://pub.dev/packages/jaspr) `^0.23.x` (pulled in transitively; must stay compatible with [`jaspr_test`](https://pub.dev/packages/jaspr_test))
 
 ## Installation
 
 ```yaml
 dev_dependencies:
-  jaspr_elementary_test: ^0.2.0
+  jaspr_elementary_test: ^0.3.0
   # test is re-exported by jaspr_test; you may add package:test explicitly if you prefer
 ```
 
