@@ -2,7 +2,7 @@ name: jaspr_elementary_test
 description: >
   Testing utilities for jaspr_elementary: ComponentModel lifecycle helpers and
   related test infrastructure.
-version: 0.2.0
+version: 0.3.0
 homepage: https://github.com/san-smith/jaspr-elementary
 repository: https://github.com/san-smith/jaspr-elementary/tree/master/packages/jaspr_elementary_test
 issue_tracker: https://github.com/san-smith/jaspr-elementary/issues
